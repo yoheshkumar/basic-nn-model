@@ -9,8 +9,9 @@ To develop a neural network regression model for the given dataset.
 This dataset presents a captivating challenge due to the intricate relationship between the input and output columns. The complex nature of this connection suggests that there may be underlying patterns or hidden factors that are not readily apparent.
 
 ## Neural Network Model
+![model1](https://github.com/yoheshkumar/basic-nn-model/assets/119393568/758a728d-56e9-4ff4-a62f-3c881cf1a1a0)
 
-![dl0](https://github.com/yoheshkumar/basic-nn-model/assets/119393568/78531e6c-15a4-4dc9-82bc-a497fa2c6f9e)
+
 
 ## DESIGN STEPS
 
@@ -47,15 +48,13 @@ This dataset presents a captivating challenge due to the intricate relationship 
 ### Register Number: 212222240118
 #### DEPENDENCIES:
 ```py
-import pandas as pd
-import seaborn as sns
+# Importing the libraries
+from tensorflow.keras.models import Sequential
+from tensorflow.keras.layers import Dense
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import MinMaxScaler
-from tensorflow.keras.models import Sequential
-from tensorflow.keras.layers import Dense,Dropout
-```
-#### DATA FROM SHEETS:
-```py
+
+# Data from sheets
 from google.colab import auth
 import gspread
 from google.auth import default
@@ -63,83 +62,62 @@ import pandas as pd
 auth.authenticate_user()
 creds, _ = default()
 gc = gspread.authorize(creds)
-worksheet = gc.open('exp1').sheet1
+worksheet = gc.open('Deep-1').sheet1
 rows = worksheet.get_all_values()
 df = pd.DataFrame(rows[1:], columns=rows[0])
 ```
-#### DATA VISUALIZATION:
 ```py
-import pandas as pd
-import seaborn as sns
-df['Input 1 (Number)'] = pd.to_numeric(df['Input 1 (Number)'])
-sns.pairplot(df)
+# Data Visualisation
+df=df.astype({'Input':'float'})
+df=df.astype({'Output':'float'})
+df.head()
+x=df[['Input']].values
+y=df[['Output']].values
 
-df['Input 1 (Number)'] = pd.to_numeric(df['Input 1 (Number)'])
-df['Output'] = pd.to_numeric(df['Output'])
-X = df['Input 1 (Number)']
-y=df['Output']
+# Spliting and Preprocessing the data
+X_train,X_test,y_train,y_test = train_test_split(x,y,test_size = 0.33,random_state = 33)
+Scaler = MinMaxScaler()
+Scaler.fit(X_train)
+X_train1 = Scaler.transform(X_train)
 ```
-#### DATA SPLIT AND PREPROCESSING:
-```PY
-from sklearn.model_selection import train_test_split
-x_train,x_test,y_train,y_test = train_test_split(X,y,test_size=0.2,random_state=42)
-
-x_train = x_train.values.reshape(-1, 1)
-x_test = x_test.values.reshape(-1, 1)
-
-from sklearn.preprocessing import MinMaxScaler
-M = MinMaxScaler()
-x_train = M.fit_transform(x_train)
-```
-#### REGRESSIVE MODEL:
 ```py
-model = Sequential()
-model.add(Dense(15,activation='relu',input_shape=x_train.shape))
-model.add(Dense(10,activation='relu'))
-model.add(Dense(1))
-
-model.summary()
-
-model.compile(optimizer='rmsprop',loss='mse')
-model.fit(x_train,y_train,epochs=80)
-model.history
+# Building and compiling the model
+ai_brain=Sequential([
+    Dense(units=7,input_shape=[1]),
+    Dense(units=5,activation='relu'),
+    Dense(units=3,activation='relu'),
+    Dense(units=1)
+])
+ai_brain.compile(optimizer = 'rmsprop', loss = 'mse')
+ai_brain.fit(X_train1,y_train,epochs = 2000)
 ```
-#### LOSS CALCULATION:
 ```py
-loss_df = pd.DataFrame(model.history.history)
+# Loss Calculation
+loss_df = pd.DataFrame(ai_brain.history.history)
 loss_df.plot()
-```
-#### PREDICTION:
-```py
-y_pred=model.predict(x_test)
-y_pred
+
+# Analysing the performance
+X_test1 = Scaler.transform(X_test)
+ai_brain.evaluate(X_test1,y_test)
+X_n1 = [[57]]
+X_n1_1 = Scaler.transform(X_n1)
+ai_brain.predict(X_n1_1)
 ```
 
 ## Dataset Information
-![dl1](https://github.com/yoheshkumar/basic-nn-model/assets/119393568/967fc676-093c-46c7-9a2e-d20d34ca228a)
+![dataset](https://github.com/yoheshkumar/basic-nn-model/assets/119393568/a78fb694-b21e-499d-9a82-13c2cbb1e575)
+## Training Loss Vs Iteration Plot
+![dl1](https://github.com/yoheshkumar/basic-nn-model/assets/119393568/683ef2c2-115a-4d2d-b244-ba6e4c63c017)
 
 
 ## OUTPUT
-### Pairplot(data)
-![dl2](https://github.com/yoheshkumar/basic-nn-model/assets/119393568/a970bc5e-4935-49d3-9676-2e2b0fd2bbfe)
-
-
-### ARCHITECTURE AND TRAINING:
-![dl3](https://github.com/yoheshkumar/basic-nn-model/assets/119393568/6025e853-c3b3-473d-aded-132fda1bc6d4)
-
-
-![dl4](https://github.com/yoheshkumar/basic-nn-model/assets/119393568/52b3dc97-25c4-4375-ac58-a205f3f36ee7)
-
-### Training Loss Vs Iteration Plot
-![dl5](https://github.com/yoheshkumar/basic-nn-model/assets/119393568/57fc49d4-7636-4383-b08e-22ad9f49e730)
-
 
 ### Test Data Root Mean Squared Error
+![dlll](https://github.com/yoheshkumar/basic-nn-model/assets/119393568/2c6f961d-a343-458f-b313-1131684869aa)
 
-![dl6](https://github.com/yoheshkumar/basic-nn-model/assets/119393568/ac244e97-0a8c-4d83-ba0f-464d6da04fea)
 
 ### New Sample Data Prediction
-![dl7](https://github.com/yoheshkumar/basic-nn-model/assets/119393568/96d88941-b285-4125-9a51-0ebb9b1b7230)
+![dl3](https://github.com/yoheshkumar/basic-nn-model/assets/119393568/1cb58388-b42a-4969-9a40-79896caea061)
 
 
 ## RESULT
